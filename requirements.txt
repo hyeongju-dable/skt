@@ -1,0 +1,6 @@
+psycopg2==2.7.5
+pandas==0.24.1
+arrow==0.13.0
+dataset==1.1.2
+kafka-python==1.4.6
+pyspark==2.4.4
