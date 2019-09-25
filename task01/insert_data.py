@@ -65,6 +65,7 @@ def main():
     data = pd.read_csv(options.source, names=options.columns).to_dict('records')
     db = get_db_conn()
     db[options.table].insert_many(data)
+    logger.info('# %s table has been inserted', options.table)
 
 
 if __name__ == '__main__':
