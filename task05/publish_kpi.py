@@ -118,6 +118,7 @@ def main():
             create_topic(topic, client)
             data = get_data(topic, db)
             for ele in data:
+                print('topic', ele)
                 producer.send(topic, ele).add_callback(on_send_success).add_errback(on_send_error)
             producer.flush()
             time.sleep(0.001)

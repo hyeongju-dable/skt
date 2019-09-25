@@ -11,7 +11,7 @@ CMD python ./task01/produce_booking.py --feature booking_id date_created id_driv
 
 # TASK 2)
 CMD export SPARK_LOCAL_IP='127.0.0.1'
-CMD spark-submit --packages org.apache.spark:spark-streaming-kafka-0-8_2.11:2.4.4 task02/weekly_summarize_booking.py 
+CMD spark-submit --packages org.apache.spark:spark-streaming-kafka-0-8_2.11:2.4.4 task02/weekly_summarize_booking.py &
 CMD sleep 2m
 CMD python ./task01/produce_booking.py --feature booking_id date_created id_driver id_passenger rating start_date  end_date tour_value
 CMD sleep 3m
