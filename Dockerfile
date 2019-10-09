@@ -1,26 +1,23 @@
-FROM chj8081/hyeongju_pyspark:v1
+FROM godatadriven/pyspark
 
-COPY . /app
-WORKDIR /app
+ARG kafka_version=2.2.1
+ARG scala_version=2.12
+ENV CLASSPATH=/usr/local/openjdk-8/bin/
+ENV KAFKA_VERSION=$kafka_version
+ENV SCALA_VERSION=$scala_version
+ENV KAFKA_HOME=/opt/kafka
+    
+RUN apt update
+RUN apt -y install wget
+RUN apt install -y postgresql postgresql-contrib
+RUN cd /opt && \
+    wget http://apache.mirror.cdnetworks.com/kafka/${KAFKA_VERSION}/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz && \
+    tar xvf kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz && \
+    ln -s /opt/kafka_${SCALA_VERSION}-${KAFKA_VERSION} ${KAFKA_HOME}
 
-# TASK 1)
-CMD python ./task01/create_tables.py
-CMD python ./task01/insert_data.py -s driver_booking_system -t "driver" --columns id_driver date_created name --source './resources/driver.csv'
-CMD python ./task01/insert_data.py -s driver_booking_system -t "passenger" --columns id_passenger date_created name --source './resources/passenger.csv'
-CMD python ./task01/produce_booking.py --feature booking_id date_created id_driver id_passenger rating start_date  end_date tour_value
+RUN mkdir /home/app
+COPY . /home/app
+WORKDIR /home/app
+RUN pip install -r requirements.txt
 
-# TASK 2)
-CMD export SPARK_LOCAL_IP='127.0.0.1'
-CMD spark-submit --packages org.apache.spark:spark-streaming-kafka-0-8_2.11:2.4.4 task02/weekly_summarize_booking.py &
-CMD sleep 2m
-CMD python ./task01/produce_booking.py --feature booking_id date_created id_driver id_passenger rating start_date  end_date tour_value
-CMD sleep 3m
-
-# TASK 3)
-CMD spark-submit task03/cal_best_relationship.py
-
-# TASK 4)
-CMD spark-submit task04/create_kpi.py
-
-# TASK 5)
-CMD python task05/publish_kpi.py
+CMD run.sh
