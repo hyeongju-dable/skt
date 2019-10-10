@@ -23,5 +23,7 @@ Apache Kafka 2.2.1
 PostgreSQL 11.5
 ```
 # References
+
 https://kafka.apache.org/
+
 https://spark.apache.org/docs/2.3.0/api/python/pyspark.html
