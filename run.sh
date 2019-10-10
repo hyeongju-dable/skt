@@ -11,6 +11,8 @@ echo "[task01] Inserting driver and passenger data to postres..."
 python ./task01/create_tables.py
 python ./task01/insert_data.py -s driver_booking_system -t "driver" --columns id_driver date_created name --source './resources/driver.csv'
 python ./task01/insert_data.py -s driver_booking_system -t "passenger" --columns id_passenger date_created name --source './resources/passenger.csv'
+echo "[task01] Inserting booking data to the kafaka queue (topic: booking)..."
+python ./task01/produce_booking.py --feature booking_id date_created id_driver id_passenger rating start_date end_date tour_value &> task01_booking.out
 
 # 3) task02: Executes spark streaming to summarize booking data
 echo "[task02] Executing Spark Streaming..."
@@ -18,8 +20,8 @@ spark-submit --packages org.apache.spark:spark-streaming-kafka-0-8_2.11:2.4.4 ta
 echo "[task02] Waiting 10 minutes until the spark streaming is ready..."
 sleep 10m # Waits 10 minutes to download spark-streaming-kafka
 # 4) task01: Inserts booking data to kafka for task02
-echo "[task01] Inserting booking data to the kafaka queue (topic: booking)..."
-python ./task01/produce_booking.py --feature booking_id date_created id_driver id_passenger rating start_date end_date tour_value &> task01_booking.out &
+echo "[task01] Inserting booking data to the kafaka queue (topic: booking) for task02..."
+python ./task01/produce_booking.py --feature booking_id date_created id_driver id_passenger rating start_date end_date tour_value &> task01_booking.out
 
 # 5) task03: Calculates best relationships
 echo "[task03] Executing the calculation of the best relationship..."
