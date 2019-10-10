@@ -2,6 +2,7 @@ FROM godatadriven/pyspark
 
 ARG kafka_version=2.2.1
 ARG scala_version=2.12
+
 ENV CLASSPATH=/usr/local/openjdk-8/bin/
 ENV KAFKA_VERSION=$kafka_version
 ENV SCALA_VERSION=$scala_version
@@ -19,5 +20,4 @@ RUN mkdir /home/app
 COPY . /home/app
 WORKDIR /home/app
 RUN pip install -r requirements.txt
-
-CMD run.sh
+ENTRYPOINT ["/bin/bash", "run.sh"]
